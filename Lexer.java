@@ -16,6 +16,8 @@ public class Lexer {
         L_BRACE,      // {
         R_BRACE,      // }
         SEMICOLON,    // ;
+        COLON,        // :
+        ASSIGN,       // =
         EOF           // $
     }
 
@@ -64,4 +66,6 @@ public class Lexer {
     private static final Pattern NUM_PATTERN = Pattern.compile("^(0" + TRAILING_SPACE + "|(-|)(0|[1-9][0-9]*)\\.[0-9]*[1-9]" + TRAILING_SPACE + "|(-|)[1-9][0-9]*" + TRAILING_SPACE + ")");
 
     private static final Set<String> KEYWORDS = Set.of( "void", "num", "return", "print", "nop", "comment", "if", "then", "else", "while", "until", "do", "not", "and", "or", "eq", "larger", "lesser", "add", "sub", "mul", "div", "mod", "neg");
+
+    
 }
