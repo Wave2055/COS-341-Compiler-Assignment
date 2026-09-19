@@ -1,8 +1,9 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-//Driver + Output. Reads SPL.txt
 
 public class Driver {
 
@@ -21,6 +22,26 @@ public class Driver {
             return;
         }
 
-        System.out.println("Read " + input.length() + " characters from " + args[0]);
+        List<Lexer.Token> tokens = new ArrayList<>();
+        int pos = 0, line = 1, col = 1;
+
+        while (pos < input.length()) {
+            char c = input.charAt(pos);
+--
+            if (c == ' ' || c == '\r') {
+                pos++; col++;
+                continue;
+            }
+            if (c == '\n') {
+                pos++; line++; col = 1;
+                continue;
+            }
+
+            
+            System.out.println("First non-whitespace char at line " + line + ", col " + col + ": '" + c + "'");
+            break;
+        }
+
+        System.out.println("Tokens collected so far: " + tokens.size());
     }
 }
