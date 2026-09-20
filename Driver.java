@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class Driver {
 
     public static void main(String[] args) {
@@ -28,7 +29,7 @@ public class Driver {
         while (pos < input.length()) {
             char c = input.charAt(pos);
 
-           
+            
             if (c == ' ' || c == '\r') {
                 pos++; col++;
                 continue;
@@ -38,8 +39,8 @@ public class Driver {
                 continue;
             }
 
-            //  to  do: delegate the actual matching to lexer
-            Lexer.Token token = Lexer.nextToken(input, pos, line, col); // LEXER_HOOK
+            // delegate the actual matching to lexer
+            Lexer.Token token = Lexer.nextToken(input, pos, line, col); // LEXER_HOOK — unconfirmed contract
 
             if (token == null) {
                 System.err.printf(
@@ -52,7 +53,7 @@ public class Driver {
 
             tokens.add(token);
 
-            // advance cursor past the matched lexeme 
+            // advance cursor past the matched lexeme
             for (int i = 0; i < token.value.length(); i++) {
                 if (token.value.charAt(i) == '\n') {
                     line++; col = 1;
@@ -67,6 +68,36 @@ public class Driver {
             }
         }
 
-        System.out.println("Tokenizing complete: " + tokens.size() + " tokens.");
+        try {
+            writeTokenXml(tokens, "token.xml");
+        } catch (IOException e) {
+            System.err.println("Could not write token.xml: " + e.getMessage());
+            System.exit(1);
+        }
+
+        System.out.println("Wrote " + tokens.size() + " tokens to token.xml");
+    }
+
+   
+    private static void writeTokenXml(List<Lexer.Token> tokens, String outPath) throws IOException {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<TOKENS>\n");
+        for (Lexer.Token t : tokens) {
+            xml.append("  <TOKEN>\n");
+            xml.append("    <TYPE>").append(t.type).append("</TYPE>\n");
+            xml.append("    <VALUE>").append(escapeXml(t.value.strip())).append("</VALUE>\n");
+            xml.append("    <LINE>").append(t.line).append("</LINE>\n");
+            xml.append("    <COL>").append(t.col).append("</COL>\n");
+            xml.append("  </TOKEN>\n");
+        }
+        xml.append("</TOKENS>\n");
+        Files.writeString(Path.of(outPath), xml.toString());
+    }
+
+    private static String escapeXml(String s) {
+        return s.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;");
     }
 }
