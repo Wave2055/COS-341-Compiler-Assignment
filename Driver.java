@@ -27,7 +27,8 @@ public class Driver {
 
         while (pos < input.length()) {
             char c = input.charAt(pos);
---
+
+           
             if (c == ' ' || c == '\r') {
                 pos++; col++;
                 continue;
@@ -37,11 +38,35 @@ public class Driver {
                 continue;
             }
 
-            
-            System.out.println("First non-whitespace char at line " + line + ", col " + col + ": '" + c + "'");
-            break;
+            //  to  do: delegate the actual matching to lexer
+            Lexer.Token token = Lexer.nextToken(input, pos, line, col); // LEXER_HOOK
+
+            if (token == null) {
+                System.err.printf(
+                    "Lexical error at line %d, col %d: illegal character '%c'%n",
+                    line, col, c
+                );
+                System.exit(1);
+                return;
+            }
+
+            tokens.add(token);
+
+            // advance cursor past the matched lexeme 
+            for (int i = 0; i < token.value.length(); i++) {
+                if (token.value.charAt(i) == '\n') {
+                    line++; col = 1;
+                } else {
+                    col++;
+                }
+            }
+            pos += token.value.length();
+
+            if (token.type == Lexer.TokenType.EOF) {
+                break;
+            }
         }
 
-        System.out.println("Tokens collected so far: " + tokens.size());
+        System.out.println("Tokenizing complete: " + tokens.size() + " tokens.");
     }
 }
