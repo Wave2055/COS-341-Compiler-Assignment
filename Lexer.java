@@ -1,6 +1,8 @@
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Lexer {
 
@@ -67,5 +69,126 @@ public class Lexer {
 
     private static final Set<String> KEYWORDS = Set.of( "void", "num", "return", "print", "nop", "comment", "if", "then", "else", "while", "until", "do", "not", "and", "or", "eq", "larger", "lesser", "add", "sub", "mul", "div", "mod", "neg");
 
-    
+    /* the line and col will be used to provide the meaningful error message to the user 
+       Unexpected token 'num' at line 18, column 3. Expected ';'
+    */
+    public List<Token> tokenize(String input){
+        List<Token> tokens = new ArrayList<>();
+
+        int line = 1;
+        int col = 1;
+        int index = 0;
+        int length = input.length();
+
+        while (index < length){
+
+            char currentChar = input.charAt(index);
+            // skip the leading whitespaces between token
+            // \t to be ignored 
+            // where the spaces, newlines (\n) and carriage returns (\r) should be treated as whitespace between tokens
+            if (currentChar == ' ' || currentChar == '\t'){
+                col++;
+                index++;
+                continue;
+            } else if (currentChar == '\n'){
+                line++;
+                col = 1;
+                index++;
+                continue;
+            } else if (currentChar == '\r'){
+                index++;
+                continue;
+            }
+        
+        // takes all rest of the input (unparsed string)
+        String currentBuffer = input.substring(index);
+
+        // using Matcher takes the compiled Pattern and executes a search against the string currentBuffer 
+
+        // get user-defined variables from the input file and create a token for it and advance the pointers 
+        Matcher definedNames = USER_NAME_PATTERN.matcher(currentBuffer);
+        if (definedNames.find()){
+
+            // gotten a string matched the regex 
+            String matched = definedNames.group();
+            // create a new token object, including the actual string value (matched), its position (line and col - to help error reporting)
+            // icrease the column pointer 
+            tokens.add(new Token(TokenType.USER_DEFINED_NAME, matched, line, col));
+            index += matched.length();
+            col += matched.length();
+            continue;
+        }
+
+        Matcher stringMatchers = STRING_PATTERN.matcher(currentBuffer);
+        if (stringMatcher.find()){
+            String matched = stringMatcher.group();
+            tokens.add(new Token(TokenType.STRING, matched, line, col));
+            index += matched.length();
+            col += matched.length();
+            continue;
+        }
+
+        Matcher numMatchers = NUM_PATTERN.matcher(currentBuffer);
+        if (numMatchers.find()){
+            String matched = numMatchers.group();
+            tokens.add(new Token(TokenType.NUM, matched, line, col));
+            index += matched.length();
+            col += matched.length();
+            continue;
+        }
+
+        if (currentBuffer.startsWith("(")){
+            tokens.add(new Token(TokenType.LPARENTHESIS, "(", line, col));
+            index++;
+            col++;
+            continue;
+        } else if (currentBuffer.startsWith(")")){
+            tokens.add(new Token(TokenType.RPARENTHESIS, ")", line, col));
+            index++;
+            col++;
+            continue;
+        } else if (currentBuffer.startsWith("{")){
+            tokens.add(new Token(TokenType.L_BRACE, "{", line, col));
+            index++;
+            col++;
+            continue;
+        } else if (currentBuffer.startsWith("}")){
+            tokens.add(new Token(TokenType.R_BRACE, "}", line, col));
+            index++;
+            col++;
+            continue;
+        } else if (currentBuffer.startsWith(";")){
+            tokens.add(new Token(TokenType.R_BRACE, ";", line, col));
+            index++;
+            col++;
+            continue;
+        }
+
+        int spaceIndex = -1;
+        for (int i = 0; i < currentBuffer.length(); i++){
+            char c = currentBuffer.charAt(i);
+            if (c == ' ' || c == '\r' || c == '\n'){
+                spaceIndex = i;
+                break;
+            }
+        }
+
+
+        if (spaceIndex != -1){
+            String rawWord = currentBuffer.substring(0, spaceIndex);
+            if (KEYWORDS.contains(rawWord)){
+                String fullToken = currentBuffer.substring(0, spaceIndex + 1);
+                tokens.add(new Token(TokenType.KEYWORD, fullToken, line, col));
+                index += fullToken.length();
+                col += fullToken.length();
+                continue;
+            }
+        }
+
+        throw new RuntimeException("Lexical Error: Unrecognised token or missing trailing space at " + line ":" + col);
+    }
+
+        tokens.add(new Token(TokenType.EOF, "$", line, col));
+        return tokens;
+    }
 }
