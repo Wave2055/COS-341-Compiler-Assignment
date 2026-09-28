@@ -96,7 +96,7 @@ public class Lexer {
         String currentBuffer = input.substring(currentPos);
         Token matchedToken = null;
 
-=        Matcher definedNames = USER_NAME_PATTERN.matcher(currentBuffer);
+        Matcher definedNames = USER_NAME_PATTERN.matcher(currentBuffer);
         if (definedNames.find()) {
             matchedToken = new Token(TokenType.USER_DEFINED_NAME, definedNames.group(), currentLine, currentCol);
         }
