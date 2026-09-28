@@ -4,8 +4,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Driver {
 
     public static void main(String[] args) {
@@ -26,49 +24,40 @@ public class Driver {
         List<Lexer.Token> tokens = new ArrayList<>();
         int pos = 0, line = 1, col = 1;
 
-        while (pos < input.length()) {
-            char c = input.charAt(pos);
+       while (pos < input.length()) {
+            Lexer.TokenResult result = Lexer.nextToken(input, pos, line, col);
 
-            
-            if (c == ' ' || c == '\r') {
-                pos++; col++;
-                continue;
-            }
-            if (c == '\n') {
-                pos++; line++; col = 1;
-                continue;
-            }
-
-            // delegate the actual matching to lexer
-            Lexer.Token token = Lexer.nextToken(input, pos, line, col); // LEXER_HOOK — unconfirmed contract
-
-            if (token == null) {
+            if (result == null) {
+                int failPos = pos;
+                while (failPos < input.length()) {
+                    char ch = input.charAt(failPos);
+                    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\u00A0') {
+                        failPos++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                char c = (failPos < input.length()) ? input.charAt(failPos) : '$';
                 System.err.printf(
-                    "Lexical error at line %d, col %d: illegal character '%c'%n",
-                    line, col, c
+                    "Lexical error around character '%c' (ascii: %d)%n",
+                    c, (int) c
                 );
                 System.exit(1);
                 return;
             }
 
-            tokens.add(token);
+            tokens.add(result.token);
 
-            // advance cursor past the matched lexeme
-            for (int i = 0; i < token.value.length(); i++) {
-                if (token.value.charAt(i) == '\n') {
-                    line++; col = 1;
-                } else {
-                    col++;
-                }
-            }
-            pos += token.value.length();
+            pos = result.newPos;
+            line = result.newLine;
+            col = result.newCol;
 
-            if (token.type == Lexer.TokenType.EOF) {
+            if (result.token.type == Lexer.TokenType.EOF) {
                 break;
             }
         }
-
-        try {
+       try {
             writeTokenXml(tokens, "token.xml");
         } catch (IOException e) {
             System.err.println("Could not write token.xml: " + e.getMessage());
