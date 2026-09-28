@@ -1,92 +1,55 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
+import java.nio.file.*;
 import java.util.List;
 
 public class Driver {
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.err.println("Usage: java Driver <path-to-SPL.txt>");
-            System.exit(1);
+        Grammar grammar = new Grammar();
+        SLRTable table = new SLRTable(grammar);
+
+        if (!table.conflicts.isEmpty()) {             // should never happen for SPL
+            System.err.println("Internal error: the grammar is not SLR(1):");
+            table.conflicts.forEach(c -> System.err.println("  " + c));
+            System.exit(3);
         }
 
-        String input;
-        try {
-            input = Files.readString(Path.of(args[0]));
-        } catch (IOException e) {
-            System.err.println("Could not read file: " + args[0] + " (" + e.getMessage() + ")");
-            System.exit(1);
+        if (args.length > 0 && args[0].equals("--table")) {
+            try {
+                table.writeHtml(Path.of("slr_table.html"));
+                System.out.println("Wrote slr_table.html (" + table.states.size() + " states, no conflicts).");
+            } catch (IOException e) { fail(1, "Could not write slr_table.html: " + e.getMessage()); }
             return;
         }
 
-        List<Lexer.Token> tokens = new ArrayList<>();
-        int pos = 0, line = 1, col = 1;
-
-       while (pos < input.length()) {
-            Lexer.TokenResult result = Lexer.nextToken(input, pos, line, col);
-
-            if (result == null) {
-                int failPos = pos;
-                while (failPos < input.length()) {
-                    char ch = input.charAt(failPos);
-                    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\u00A0') {
-                        failPos++;
-                    } else {
-                        break;
-                    }
-                }
-                
-                char c = (failPos < input.length()) ? input.charAt(failPos) : '$';
-                System.err.printf(
-                    "Lexical error around character '%c' (ascii: %d)%n",
-                    c, (int) c
-                );
-                System.exit(1);
-                return;
-            }
-
-            tokens.add(result.token);
-
-            pos = result.newPos;
-            line = result.newLine;
-            col = result.newCol;
-
-            if (result.token.type == Lexer.TokenType.EOF) {
-                break;
-            }
-        }
-       try {
-            writeTokenXml(tokens, "token.xml");
+        Path in = Path.of(args.length > 0 ? args[0] : "SPL.txt");
+        Path out = Path.of("tree.xml");
+        String source;
+        try {
+            source = Files.readString(in);
         } catch (IOException e) {
-            System.err.println("Could not write token.xml: " + e.getMessage());
-            System.exit(1);
+            fail(1, "Could not read input file '" + in + "': " + e.getMessage()); return;
         }
 
-        System.out.println("Wrote " + tokens.size() + " tokens to token.xml");
-    }
-
-   
-    private static void writeTokenXml(List<Lexer.Token> tokens, String outPath) throws IOException {
-        StringBuilder xml = new StringBuilder();
-        xml.append("<TOKENS>\n");
-        for (Lexer.Token t : tokens) {
-            xml.append("  <TOKEN>\n");
-            xml.append("    <TYPE>").append(t.type).append("</TYPE>\n");
-            xml.append("    <VALUE>").append(escapeXml(t.value.strip())).append("</VALUE>\n");
-            xml.append("    <LINE>").append(t.line).append("</LINE>\n");
-            xml.append("    <COL>").append(t.col).append("</COL>\n");
-            xml.append("  </TOKEN>\n");
+        try {
+            List<Lexer.Token> tokens = new Lexer(source).tokenize();
+            Parser.Node root = new Parser(grammar, table).parse(tokens);
+            TreeXmlWriter.write(root, out);
+            System.out.println("Syntax OK. Wrote " + out + ".");
+        } catch (Lexer.LexicalError | Parser.SyntaxError e) {
+            deleteQuietly(out);                         // never leave a stale tree.xml behind
+            fail(2, e.getMessage());
+        } catch (IOException e) {
+            fail(1, "Could not write " + out + ": " + e.getMessage());
         }
-        xml.append("</TOKENS>\n");
-        Files.writeString(Path.of(outPath), xml.toString());
     }
 
-    private static String escapeXml(String s) {
-        return s.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;");
+    private static void deleteQuietly(Path p) {
+        try { Files.deleteIfExists(p); } catch (IOException ignored) {}
+    }
+
+    private static void fail(int code, String msg) {
+        System.err.println(msg);
+        System.exit(code);
     }
 }
