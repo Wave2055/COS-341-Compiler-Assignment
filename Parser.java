@@ -1,6 +1,6 @@
 import java.util.*;
 
-// Table SLR(1) shift-reduce parser that builds the syntax tree while it parses 
+/** Table SLR(1) shift-reduce parser that builds the syntax tree while it parses. */
 public class Parser {
 
     public static class Node {
@@ -19,9 +19,7 @@ public class Parser {
     private final Grammar g;
     private final SLRTable table;
 
-    public Parser(Grammar g, SLRTable table) { 
-        this.g = g; this.table = table; 
-    }
+    public Parser(Grammar g, SLRTable table) { this.g = g; this.table = table; }
 
     public Node parse(List<Lexer.Token> tokens) throws SyntaxError {
         Deque<Integer> states = new ArrayDeque<>();
@@ -77,6 +75,7 @@ public class Parser {
     }
 
     //errors
+
     private SyntaxError error(Deque<Integer> stack, List<Lexer.Token> tokens, int i) {
         Lexer.Token tok = tokens.get(i);
         Lexer.Token prev = i > 0 ? tokens.get(i - 1) : null;
@@ -85,7 +84,7 @@ public class Parser {
         // use the whole FOLLOW set). So instead of listing the raw table row, simulate
         // every terminal on a copy of the stack and keep only those that really lead to
         // a shift: that is the exact set of tokens that could legally come next.
-        Map<String, Integer> expected = new TreeMap<>();   // terminal -> state it would shift from
+        Map<String, Integer> expected = new TreeMap<>(); // terminal -> state it would shift from
         for (String t : g.terminals) {
             Integer from = shiftState(stack, t);
             if (from != null) expected.put(t, from);
@@ -133,6 +132,7 @@ public class Parser {
         return out.isEmpty() ? "(nothing)" : String.join(", ", out);
     }
 
+    // The kernel item with the most progress in a state = the construct being built there
     private SLRTable.Item context(int state) {
         SLRTable.Item best = null;
         for (SLRTable.Item it : table.states.get(state))
@@ -188,4 +188,5 @@ public class Parser {
         if (t.equals(Grammar.EOF) && prev != null)
             h.add("check that every '(' has a matching ')' and every '{' a matching '}'.");
         return h;
+    }
 }
