@@ -1,0 +1,1 @@
+: : while lesser ( 1 2 ) do { nop ; ;

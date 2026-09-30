@@ -1,0 +1,13 @@
+:
+num #outer ( #x ) {
+  #t :
+  num #inner ( #y ) {
+    : :
+    return ( add ( #y 1 ) )
+  }
+  :
+  #t = #inner ( #x ) ;
+  return ( #t )
+}
+:
+print ( #outer ( 41 ) ) ;

@@ -1,0 +1,1 @@
+: : do { nop ; } lesser ( 1 2 ) ;

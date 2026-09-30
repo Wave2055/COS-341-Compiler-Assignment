@@ -1,0 +1,7 @@
+#x #y #z :
+:
+#x = 5 ;
+#y = add ( #x 3.14 ) ;
+#z = div ( mul ( #x #y ) sub ( 0.5 -2 ) ) ;
+#z = mod ( neg ( #z ) 7 ) ;
+print ( #z ) ;
