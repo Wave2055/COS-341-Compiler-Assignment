@@ -1,6 +1,12 @@
 # COS-341-Compiler-Assignment
 ## Group 13
 
+## Team Members
+- Ayush Beekum u23596351
+- Jaitin Moodally u23621372
+- Kgaugelo Matsena u23658462
+- Lusanda Mtembu u23602016
+
 ## Compiling the Jar
 
 ```
@@ -13,7 +19,7 @@ This jar can be executed on Java version 17 or higher
 
 ## Executing the Jar file
 
-You execute the jar by using the commmand
+You execute the jar by using the command
 
 ```
 java -jar COCO-Group13.jar 
