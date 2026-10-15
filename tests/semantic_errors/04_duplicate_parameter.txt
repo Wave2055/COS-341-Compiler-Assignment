@@ -1,0 +1,8 @@
+:
+void #f ( #a #a ) {
+  : :
+  nop ;
+  return
+}
+:
+#f ( 1 2 ) ;

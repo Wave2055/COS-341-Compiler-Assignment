@@ -37,3 +37,17 @@ java -jar COCO-Group13.jar <path to file>
 This overrides the search for SPL.txt and allows you to run the source code from any file on the system should file path be provided
 
 
+
+## Output
+
+On a syntactically correct program the compiler writes `tree.xml` (the syntax tree).
+It then runs the scope and name analysis (Part 2a). If that passes, it writes `symbol_table.txt`:
+every declared variable, parameter and function gets a unique internal name (`v1`, `f1`, ...),
+and every name in the tree is mapped to the entity it refers to.
+Lexical, syntax and semantic errors are printed to stderr and exit with code 2.
+
+## Running the tests
+
+```
+tests/run_tests.sh      # add -v to see every compiler message
+```

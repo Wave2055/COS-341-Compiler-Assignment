@@ -1,0 +1,6 @@
+:
+void #f ( ) { #t : : #t = 1 ; return }
+void #g ( ) { : : #t = 2 ; return }
+:
+#f ( ) ;
+#g ( ) ;

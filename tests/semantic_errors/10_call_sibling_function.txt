@@ -1,0 +1,5 @@
+:
+num #h ( #x ) { : : nop ; return ( #x ) }
+num #f ( #y ) { : : nop ; return ( #h ( #y ) ) }
+:
+print ( #f ( 1 ) ) ;

@@ -1,0 +1,5 @@
+#i : :
+#i = 0 ;
+while lesser ( #i #n ) do {
+  #i = add ( #i 1 ) ;
+} ;

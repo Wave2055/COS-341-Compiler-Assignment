@@ -24,6 +24,7 @@ public class Driver {
 
         Path in = Path.of(args.length > 0 ? args[0] : "SPL.txt");
         Path out = Path.of("tree.xml");
+        Path symOut = Path.of("symbol_table.txt");
         String source;
         try {
             source = Files.readString(in);
@@ -36,11 +37,19 @@ public class Driver {
             Parser.Node root = new Parser(grammar, table).parse(tokens);
             TreeXmlWriter.write(root, out);
             System.out.println("Syntax OK. Wrote " + out + ".");
+
+            SymbolTable symbols = ScopeAnalyser.analyse(root);
+            symbols.write(symOut);
+            System.out.println("Scopes and names OK. Wrote " + symOut + ".");
         } catch (Lexer.LexicalError | Parser.SyntaxError e) {
             deleteQuietly(out);                         // never leave a stale tree.xml behind
+            deleteQuietly(symOut);
+            fail(2, e.getMessage());
+        } catch (ScopeAnalyser.SemanticError e) {
+            deleteQuietly(symOut);                      // the tree is still valid, the symbol table is not
             fail(2, e.getMessage());
         } catch (IOException e) {
-            fail(1, "Could not write " + out + ": " + e.getMessage());
+            fail(1, "Could not write output: " + e.getMessage());
         }
     }
 
