@@ -1,0 +1,16 @@
+#g :
+num #square ( #n ) {
+  #r : :
+  #r = mul ( #n #n ) ;
+  return ( #r )
+}
+void #show ( #a #b ) {
+  : :
+  print ( #a ) ;
+  print ( #b ) ;
+  return
+}
+:
+#g = #square ( 4 ) ;
+#show ( #g add ( #g 1 ) ) ;
+#show ( ) ;

@@ -1,0 +1,14 @@
+#i :
+:
+#i = 0 ;
+while lesser ( #i 10 ) do {
+  #i = add ( #i 1 ) ;
+} ;
+until eq ( #i 0 ) do {
+  #i = sub ( #i 1 ) ;
+} ;
+do {
+  comment "post-test:loop!" ;
+  #i = add ( #i 2 ) ;
+} while lesser ( #i 20 ) ;
+do { nop ; } until larger ( #i 0 ) ;

@@ -1,0 +1,1 @@
+#v : void #f ( ) { : : nop ; return } : #f ( ) ; #v = 1 ; print ( #v ) ;

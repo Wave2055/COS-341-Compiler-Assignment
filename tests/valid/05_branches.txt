@@ -1,0 +1,11 @@
+#a #b :
+:
+#a = 10 ;
+if larger ( #a 5 ) then {
+  print "big" ;
+} else {
+  print "small" ;
+} ;
+if and ( not ( eq ( #a 0 ) ) or ( lesser ( #a #b ) eq ( #b 1 ) ) ) then {
+  nop ;
+} else { } ;
