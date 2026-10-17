@@ -1,0 +1,4 @@
+#i :
+void #f ( ) { : : nop ; return }
+:
+while lesser ( #i #f ( ) ) do { #i = add ( #i 1 ) ; } ;

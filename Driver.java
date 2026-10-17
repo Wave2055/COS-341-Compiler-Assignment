@@ -39,13 +39,15 @@ public class Driver {
             System.out.println("Syntax OK. Wrote " + out + ".");
 
             SymbolTable symbols = ScopeAnalyser.analyse(root);
+            System.out.println("Scopes and names OK.");
+            TypeAnalyser.analyse(root, symbols);
             symbols.write(symOut);
-            System.out.println("Scopes and names OK. Wrote " + symOut + ".");
+            System.out.println("Types OK. Wrote " + symOut + ".");
         } catch (Lexer.LexicalError | Parser.SyntaxError e) {
             deleteQuietly(out);                         // never leave a stale tree.xml behind
             deleteQuietly(symOut);
             fail(2, e.getMessage());
-        } catch (ScopeAnalyser.SemanticError e) {
+        } catch (ScopeAnalyser.SemanticError | TypeAnalyser.TypeError e) {
             deleteQuietly(symOut);                      // the tree is still valid, the symbol table is not
             fail(2, e.getMessage());
         } catch (IOException e) {

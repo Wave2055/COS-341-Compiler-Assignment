@@ -41,10 +41,11 @@ This overrides the search for SPL.txt and allows you to run the source code from
 ## Output
 
 On a syntactically correct program the compiler writes `tree.xml` (the syntax tree).
-It then runs the scope and name analysis (Part 2a). If that passes, it writes `symbol_table.txt`:
-every declared variable, parameter and function gets a unique internal name (`v1`, `f1`, ...),
+It then runs the scope and name analysis (Part 2a) and the type analysis (Part 2b).
+If both pass, it writes `symbol_table.txt`: every declared variable, parameter and function
+gets a unique internal name (`v1`, `f1`, ...) and its type (`numeric` or `procedure`),
 and every name in the tree is mapped to the entity it refers to.
-Lexical, syntax and semantic errors are printed to stderr and exit with code 2.
+Lexical, syntax, semantic and type errors are printed to stderr and exit with code 2.
 
 ## Running the tests
 

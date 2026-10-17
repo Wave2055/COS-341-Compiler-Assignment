@@ -4,7 +4,8 @@
 #   lexical_errors/   must exit 2 with a "Lexical error" and no tree.xml
 #   syntax_errors/    must exit 2 with a "Syntax error" and no tree.xml
 #   semantic_errors/  must exit 2 with a "Semantic error" and no symbol_table.txt
-# then compiles and runs the ScopeAnalyserTest unit tests against the jar.
+#   type_errors/      must exit 2 with a "Type error" and no symbol_table.txt
+# then compiles and runs every tests/*Test.java unit test class against the jar.
 # usage: tests/run_tests.sh [-v]   (-v prints the compiler's messages)
 
 cd "$(dirname "$0")"
@@ -29,8 +30,8 @@ run() {  # dir expected_exit expected_message
             [ -z "$err" ] && err=$(python3 "$TESTS/check_symbols.py" "$work/tree.xml" "$work/symbol_table.txt")
         elif [ -z "$err" ]; then
             grep -q "$3" <<<"$out" || err="expected a '$3' message"
-            # a semantic error happens after parsing, so only the symbol table must be missing
-            [ "$1" != semantic_errors ] && [ -f "$work/tree.xml" ] && err="tree.xml was written despite the error"
+            # semantic and type errors happen after parsing, so only the symbol table must be missing
+            [ "$1" != semantic_errors ] && [ "$1" != type_errors ] && [ -f "$work/tree.xml" ] && err="tree.xml was written despite the error"
             [ -f "$work/symbol_table.txt" ] && err="symbol_table.txt was written despite the error"
         fi
         if [ -z "$err" ]; then
@@ -47,16 +48,19 @@ run valid          0 ""
 run lexical_errors 2 "Lexical error"
 run syntax_errors  2 "Syntax error"
 run semantic_errors 2 "Semantic error"
+run type_errors   2 "Type error"
 
-echo; echo "Unit tests: ScopeAnalyserTest"
 classes=$(mktemp -d)
-if javac -cp "$JAR" -d "$classes" "$TESTS/ScopeAnalyserTest.java" &&
-   unit=$(java -cp "$JAR:$classes" ScopeAnalyserTest); then
-    echo "$unit" | tail -1; pass=$((pass + 1)); echo "PASS  unit tests"
-else
-    echo "$unit" | grep -v '^PASS'; fail=$((fail + 1)); echo "FAIL  unit tests"
-fi
-[ -n "$VERBOSE" ] && sed 's/^/      /' <<<"$unit"
+for src in "$TESTS"/*Test.java; do
+    cls=$(basename "$src" .java)
+    echo; echo "Unit tests: $cls"
+    if javac -cp "$JAR" -d "$classes" "$src" && unit=$(java -cp "$JAR:$classes" "$cls"); then
+        echo "$unit" | tail -1; pass=$((pass + 1)); echo "PASS  $cls"
+    else
+        echo "$unit" | grep -v '^PASS'; fail=$((fail + 1)); echo "FAIL  $cls"
+    fi
+    [ -n "$VERBOSE" ] && sed 's/^/      /' <<<"$unit"
+done
 rm -rf "$classes"
 
 echo; echo "$pass passed, $fail failed"

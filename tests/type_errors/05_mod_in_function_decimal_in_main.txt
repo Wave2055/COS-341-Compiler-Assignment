@@ -1,0 +1,4 @@
+#r :
+num #f ( #x ) { : : nop ; return ( mod ( #x 3 ) ) }
+:
+#r = #f ( 1.5 ) ;

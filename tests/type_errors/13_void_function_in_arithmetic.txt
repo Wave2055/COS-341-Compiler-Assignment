@@ -1,0 +1,4 @@
+#x :
+void #f ( ) { : : nop ; return }
+:
+#x = add ( 1 neg ( #f ( ) ) ) ;

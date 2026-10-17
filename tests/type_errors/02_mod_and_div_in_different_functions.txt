@@ -1,0 +1,6 @@
+:
+num #f ( #x ) { : : nop ; return ( mod ( #x 3 ) ) }
+num #g ( #x ) { : : nop ; return ( div ( #x 3 ) ) }
+:
+print ( #f ( 10 ) ) ;
+print ( #g ( 10 ) ) ;
