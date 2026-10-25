@@ -1,0 +1,14 @@
+#x :
+num #sq ( #a ) { : : nop ; return ( mul ( #a #a ) ) }
+void #show ( #a ) {
+  :
+  num #twice ( #b ) { : : nop ; return ( add ( #b #b ) ) }
+  :
+  print ( #twice ( #a ) ) ;
+  return
+}
+:
+#x = #sq ( #sq ( 2.5 ) ) ;
+#show ( #sq ( #x ) ) ;
+while larger ( #sq ( #x ) 0.01 ) do { #x = div ( #x 2 ) ; } ;
+#show ( div ( #x #sq ( 3 ) ) ) ;

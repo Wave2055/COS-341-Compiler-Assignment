@@ -1,0 +1,4 @@
+#x :
+num #f ( ) { : : nop ; return ( 1 ) }
+:
+#x = #f ;

@@ -7,6 +7,8 @@ public class Parser {
         public int id; // assigned after parsing, in preorder
         public final String symbol; // non-terminal name, or the token's lexeme for leaves
         public final boolean leaf;
+        public int line, col; // source position, for leaves only
+        public String type = "unknown"; // filled in by the type analyser
         public Node parent;
         public final List<Node> children = new ArrayList<>();
         Node(String symbol, boolean leaf) { this.symbol = symbol; this.leaf = leaf; }
@@ -36,7 +38,10 @@ public class Parser {
 
             switch (a.kind()) {
                 case SHIFT -> {
-                    nodes.push(new Node(tok.lexeme, true));
+                    Node leaf = new Node(tok.lexeme, true);
+                    leaf.line = tok.line;
+                    leaf.col = tok.col;
+                    nodes.push(leaf);
                     states.push(a.target());
                     i++;
                 }

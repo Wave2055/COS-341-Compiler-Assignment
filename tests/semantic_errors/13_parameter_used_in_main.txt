@@ -1,0 +1,5 @@
+:
+void #f ( #a ) { : : print ( #a ) ; return }
+:
+#f ( 1 ) ;
+print ( #a ) ;

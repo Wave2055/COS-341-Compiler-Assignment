@@ -1,0 +1,4 @@
+:
+num #f ( ) { : : nop ; return ( #r ) }
+:
+print ( #f ( ) ) ;

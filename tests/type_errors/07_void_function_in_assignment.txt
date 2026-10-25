@@ -1,0 +1,4 @@
+#x :
+void #f ( ) { : : nop ; return }
+:
+#x = #f ( ) ;

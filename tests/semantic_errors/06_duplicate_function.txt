@@ -1,0 +1,5 @@
+:
+void #f ( ) { : : nop ; return }
+num #f ( #x ) { : : nop ; return ( #x ) }
+:
+#f ( ) ;

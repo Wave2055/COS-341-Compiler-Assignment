@@ -1,0 +1,7 @@
+#n #r :
+num #rem ( #x #y ) { : : nop ; return ( mod ( #x #y ) ) }
+:
+#n = 17 ;
+#r = #rem ( #n -5 ) ;
+if eq ( mod ( #n 2 ) 0 ) then { print "even" ; } else { print "odd" ; } ;
+print ( #r ) ;

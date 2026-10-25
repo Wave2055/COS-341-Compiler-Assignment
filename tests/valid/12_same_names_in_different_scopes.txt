@@ -1,0 +1,21 @@
+#f :
+void #a ( #p ) {
+  #t :
+  num #h ( #p ) { : : nop ; return ( mul ( #p 2 ) ) }
+  :
+  #t = #h ( #p ) ;
+  print ( #t ) ;
+  return
+}
+void #b ( #p ) {
+  #t :
+  num #h ( #p ) { : : nop ; return ( add ( #p 1 ) ) }
+  :
+  #t = #h ( #p ) ;
+  print ( #t ) ;
+  return
+}
+:
+#f = 3 ;
+#a ( #f ) ;
+#b ( #f ) ;

@@ -1,0 +1,13 @@
+#i #j :
+:
+#i = 0 ;
+while lesser ( #i 3 ) do {
+  #j = 0 ;
+  do { print ( add ( mul ( #i 10 ) #j ) ) ; #j = add ( #j 1 ) ; } while lesser ( #j 2 ) ;
+  #i = add ( #i 1 ) ;
+} ;
+until or ( eq ( #i 0 ) larger ( 0 #i ) ) do { #i = sub ( #i 2 ) ; } ;
+print ( #i ) ;
+do { print "once" ; } until eq ( 1 1 ) ;
+if and ( not ( or ( eq ( #i 1 ) eq ( #i 2 ) ) ) not ( larger ( #i 5 ) ) ) then { print "yes" ; } else { print "no" ; } ;
+print "done:ok?!" ;

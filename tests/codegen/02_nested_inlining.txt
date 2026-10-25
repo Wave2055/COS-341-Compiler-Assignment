@@ -1,0 +1,24 @@
+#r :
+num #outer ( #x ) {
+  #acc #i :
+  num #tri ( #k ) {
+    #s :
+    :
+    #s = 0 ;
+    do { #s = add ( #s #k ) ; #k = sub ( #k 1 ) ; } until lesser ( #k 1 ) ;
+    return ( #s )
+  }
+  :
+  #acc = 0 ;
+  #i = 1 ;
+  while lesser ( #i add ( #x 1 ) ) do {
+    #acc = add ( #acc #tri ( #i ) ) ;
+    #i = add ( #i 1 ) ;
+  } ;
+  return ( add ( #acc #tri ( #x ) ) )
+}
+:
+#r = #outer ( 3 ) ;
+print ( #r ) ;
+print ( #outer ( 4 ) ) ;
+print ( add ( #outer ( 1 ) #outer ( 2 ) ) ) ;

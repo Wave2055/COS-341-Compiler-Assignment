@@ -1,0 +1,6 @@
+#a : :
+if eq ( #a 0 ) then {
+  nop ;
+} else {
+  #b = 1 ;
+} ;

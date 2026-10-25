@@ -1,0 +1,8 @@
+#x #y :
+num #half ( #a ) { : : nop ; return ( div ( #a 2 ) ) }
+:
+#x = div ( 7 2 ) ;
+print ( #x ) ;
+#y = #half ( #half ( 5 ) ) ;
+print ( #y ) ;
+print ( sub ( 0.5 neg ( 0.25 ) ) ) ;

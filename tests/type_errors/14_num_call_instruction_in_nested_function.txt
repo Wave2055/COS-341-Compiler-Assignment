@@ -1,0 +1,10 @@
+:
+void #outer ( ) {
+  :
+  num #inner ( ) { : : nop ; return ( 1 ) }
+  :
+  #inner ( ) ;
+  return
+}
+:
+#outer ( ) ;

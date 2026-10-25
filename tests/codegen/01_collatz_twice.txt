@@ -1,0 +1,26 @@
+#a #x #y #z :
+num #collatz ( #n ) {
+  #steps #h :
+  :
+  #steps = 0 ;
+  while not ( eq ( #n 1 ) ) do {
+    if eq ( mod ( #n 2 ) 0 ) then {
+      comment "halve-without-div:mod-forces-integers" ;
+      #h = 0 ;
+      until eq ( add ( #h #h ) #n ) do { #h = add ( #h 1 ) ; } ;
+      #n = #h ;
+    } else {
+      #n = add ( mul ( 3 #n ) 1 ) ;
+    } ;
+    #steps = add ( #steps 1 ) ;
+  } ;
+  return ( #steps )
+}
+:
+#a = 13 ;
+#x = #collatz ( #a ) ;
+#y = add ( #x 1 ) ;
+#z = #collatz ( #y ) ;
+print ( #x ) ;
+print ( #z ) ;
+print ( #a ) ;

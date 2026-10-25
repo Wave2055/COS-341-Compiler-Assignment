@@ -1,0 +1,4 @@
+:
+void #f ( ) { : : nop ; return }
+:
+if eq ( #f ( ) 1 ) then { nop ; } else { nop ; } ;

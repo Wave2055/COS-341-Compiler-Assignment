@@ -1,0 +1,10 @@
+:
+num #f ( ) {
+  :
+  void #g ( ) { : : nop ; return }
+  :
+  nop ;
+  return ( #g ( ) )
+}
+:
+print ( #f ( ) ) ;

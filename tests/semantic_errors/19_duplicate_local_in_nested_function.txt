@@ -1,0 +1,10 @@
+:
+void #f ( ) {
+  :
+  void #g ( #p ) { #q #r #q : : nop ; return }
+  :
+  #g ( 1 ) ;
+  return
+}
+:
+#f ( ) ;

@@ -1,0 +1,5 @@
+:
+void #p ( ) { : : nop ; return }
+void #q ( #a ) { : : print ( #a ) ; return }
+:
+#q ( #p ( ) ) ;

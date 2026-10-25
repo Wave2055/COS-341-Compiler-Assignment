@@ -1,0 +1,21 @@
+#g :
+void #l1 ( #a ) {
+  :
+  void #l2 ( #b ) {
+    :
+    num #l3 ( #c ) {
+      : :
+      #g = add ( #a add ( #b #c ) ) ;
+      return ( #g )
+    }
+    :
+    print ( #l3 ( #b ) ) ;
+    return
+  }
+  :
+  #l2 ( #a ) ;
+  return
+}
+:
+#g = 0 ;
+#l1 ( 1 ) ;

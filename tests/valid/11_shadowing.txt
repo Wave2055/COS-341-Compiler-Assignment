@@ -1,0 +1,10 @@
+#x #y :
+num #f ( #x ) {
+  #z : :
+  #z = add ( #x #y ) ;
+  return ( #z )
+}
+:
+#x = 1 ;
+#y = 2 ;
+print ( #f ( #x ) ) ;
