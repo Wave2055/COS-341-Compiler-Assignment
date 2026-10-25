@@ -8,7 +8,7 @@ public class Driver {
         Grammar grammar = new Grammar();
         SLRTable table = new SLRTable(grammar);
 
-        if (!table.conflicts.isEmpty()) {             // should never happen for SPL
+        if (!table.conflicts.isEmpty()) { // should never happen for SPL
             System.err.println("Internal error: the grammar is not SLR(1):");
             table.conflicts.forEach(c -> System.err.println("  " + c));
             System.exit(3);
@@ -25,6 +25,7 @@ public class Driver {
         Path in = Path.of(args.length > 0 ? args[0] : "SPL.txt");
         Path out = Path.of("tree.xml");
         Path symOut = Path.of("symbol_table.txt");
+        Path codeOut = Path.of("output.cpp");
         String source;
         try {
             source = Files.readString(in);
@@ -43,12 +44,17 @@ public class Driver {
             TypeAnalyser.analyse(root, symbols);
             symbols.write(symOut);
             System.out.println("Types OK. Wrote " + symOut + ".");
+
+            Files.writeString(codeOut, CodeGenerator.generate(root, symbols));
+            System.out.println("Code generated. Wrote " + codeOut + " (compile with: g++ " + codeOut + " -o program).");
         } catch (Lexer.LexicalError | Parser.SyntaxError e) {
-            deleteQuietly(out);                         // never leave a stale tree.xml behind
+            deleteQuietly(out); // never leave a stale tree.xml behind
             deleteQuietly(symOut);
+            deleteQuietly(codeOut);
             fail(2, e.getMessage());
         } catch (ScopeAnalyser.SemanticError | TypeAnalyser.TypeError e) {
-            deleteQuietly(symOut);                      // the tree is still valid, the symbol table is not
+            deleteQuietly(symOut); // the tree is still valid, the symbol table is not
+            deleteQuietly(codeOut);
             fail(2, e.getMessage());
         } catch (IOException e) {
             fail(1, "Could not write output: " + e.getMessage());

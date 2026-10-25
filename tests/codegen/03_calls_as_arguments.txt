@@ -1,0 +1,16 @@
+#v :
+num #sq ( #a ) { : : nop ; return ( mul ( #a #a ) ) }
+num #sum3 ( #a #b #c ) { : : nop ; return ( add ( #a add ( #b #c ) ) ) }
+void #report ( #p #q ) {
+  : :
+  if larger ( #p #q ) then { print "first-larger" ; } else {
+    if eq ( #p #q ) then { print "equal" ; } else { print "second-larger" ; } ;
+  } ;
+  return
+}
+:
+#v = #sum3 ( #sq ( 2 ) #sq ( #sq ( 2 ) ) neg ( 3 ) ) ;
+print ( #v ) ;
+#report ( #v 17 ) ;
+#report ( #sq ( 4 ) #v ) ;
+#report ( 1 #sq ( 1 ) ) ;

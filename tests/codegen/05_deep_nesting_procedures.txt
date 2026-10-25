@@ -1,0 +1,25 @@
+#g :
+void #l1 ( #a ) {
+  :
+  void #l2 ( #b ) {
+    #i :
+    num #l3 ( #c ) {
+      : :
+      #g = add ( #g add ( #a add ( #b #c ) ) ) ;
+      return ( #g )
+    }
+    :
+    #i = 0 ;
+    until eq ( #i 2 ) do { print ( #l3 ( #i ) ) ; #i = add ( #i 1 ) ; } ;
+    return
+  }
+  :
+  #l2 ( #a ) ;
+  #l2 ( add ( #a 10 ) ) ;
+  return
+}
+:
+#g = 0 ;
+#l1 ( 1 ) ;
+#l1 ( 100 ) ;
+print ( #g ) ;
